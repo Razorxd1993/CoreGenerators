@@ -1,0 +1,9 @@
+name: CoreGenerators
+main: com.coregenerators.CoreGenerators
+version: 1.0
+api-version: 1.16
+author: Razorxd1993
+depend: [Vault, ItemsAdder]
+commands:
+  generators:
+    description: Öffnet das Generator-Menü
