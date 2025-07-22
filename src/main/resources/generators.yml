@@ -2,6 +2,8 @@ generators:
   basic_generator:
     fuel: COAL
     interval: 20
+    itemsadder: namespace:customblock
+    customdata:
     drop:
       - material: DIAMOND
         amount: 2

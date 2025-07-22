@@ -1,11 +1,6 @@
-/*
- * CoreGenerators - Auto-Generator Plugin für Minecraft (Spigot/Paper)
- * Abhängigkeiten: ItemsAdder, Vault
- * Autor: Razorxd1993 (angepasst für CoreFurnace Code-Struktur)
- */
-
 package com.coregenerators;
 
+import com.coregenerators.util.GeneratorStorage;
 import dev.lone.itemsadder.api.CustomBlock;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -16,8 +11,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import java.io.IOException;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -26,8 +22,8 @@ public final class CoreGenerators extends JavaPlugin implements Listener {
     public static CoreGenerators instance;
     public static Economy economy;
 
-    // Hier speichern wir alle Generator-Daten
-    public Map<String, Generator> generators = new HashMap<>();
+    // Generator-Datenbank
+    public static final Map<String, Generator> generators = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -42,18 +38,24 @@ public final class CoreGenerators extends JavaPlugin implements Listener {
         // Events registrieren
         Bukkit.getPluginManager().registerEvents(new GeneratorListener(), this);
 
-        // Konfigurationen erstellen
+        // Konfigs laden
         saveDefaultConfig();
         createConfig("generators.yml");
         createConfig("upgrades.yml");
         createConfig("messages.yml");
         createConfig("gui.yml");
 
-        // Generator-Daten laden
         loadGenerators();
+
+        // Storage laden
+        GeneratorStorage.load();
+
+        // Command registrieren
+        getCommand("coregen").setExecutor(new com.coregenerators.commands.CoreCommand());
 
         getLogger().info("CoreGenerators erfolgreich geladen!");
 
+        // Test-Datei zum Debuggen
         File testFile = new File(getDataFolder(), "debug.txt");
         try {
             getDataFolder().mkdirs();
@@ -62,15 +64,13 @@ public final class CoreGenerators extends JavaPlugin implements Listener {
         } catch (IOException e) {
             getLogger().severe("Konnte Testdatei nicht erstellen: " + e.getMessage());
         }
-
-
-
     }
-
-
 
     @Override
     public void onDisable() {
+        // Storage speichern
+        GeneratorStorage.save();
+
         getLogger().info("CoreGenerators deaktiviert.");
     }
 
@@ -102,8 +102,6 @@ public final class CoreGenerators extends JavaPlugin implements Listener {
         return instance;
     }
 
-    public static final Map<String, Generator> generators = new HashMap<>();
-
     private void loadGenerators() {
         FileConfiguration generatorConfig = getConfigFile("generators.yml");
         ConfigurationSection generatorSection = generatorConfig.getConfigurationSection("generators");
@@ -115,9 +113,15 @@ public final class CoreGenerators extends JavaPlugin implements Listener {
 
             String itemsAdderId = section.getString("itemsadder");
             CustomBlock customBlock = CustomBlock.getInstance(itemsAdderId);
+            if (customBlock == null) {
+                getLogger().warning("CustomBlock '" + itemsAdderId + "' nicht gefunden! Fallback zu STONE.");
+            }
+
+            Material fallbackMaterial = Material.STONE;
 
             Material fuel = Material.valueOf(section.getString("fuel").toUpperCase());
             int interval = section.getInt("interval");
+            int customData = section.getInt("customdata", 0);
 
             List<Map<?, ?>> dropList = section.getMapList("drop");
             List<GeneratorDrop> drops = new ArrayList<>();
@@ -129,11 +133,10 @@ public final class CoreGenerators extends JavaPlugin implements Listener {
                 drops.add(new GeneratorDrop(material, amount, chance));
             }
 
-            Generator generator = new Generator(id, customBlock, fuel, interval, drops);
+            Generator generator = new Generator(id, customBlock, fallbackMaterial, interval, customData, drops);
             generators.put(id, generator);
         }
 
         getLogger().info("Es wurden " + generators.size() + " Generator(en) geladen.");
     }
-
 }

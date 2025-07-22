@@ -5,5 +5,7 @@ api-version: 1.16
 author: Razorxd1993
 depend: [Vault, ItemsAdder]
 commands:
-  generators:
-    description: Öffnet das Generator-Menü
+  coregen:
+    description: Generator-Befehle
+    usage: /<command> <give|reload|check|remove>
+    permission: coregen.admin

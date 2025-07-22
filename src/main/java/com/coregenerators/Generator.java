@@ -1,21 +1,25 @@
 package com.coregenerators;
+
 import dev.lone.itemsadder.api.CustomBlock;
 import org.bukkit.Material;
 
 import java.util.List;
 
 public class Generator {
+
     private final String id;
-    private final CustomBlock block;
-    private final Material fuel;
+    private final CustomBlock customBlock;
+    private final Material fallbackMaterial;
     private final int interval;
+    private final int customData;
     private final List<GeneratorDrop> drops;
 
-    public Generator(String id, Material fuel, int interval, List<GeneratorDrop> drops) {
+    public Generator(String id, CustomBlock customBlock, Material fallbackMaterial, int interval, int customData, List<GeneratorDrop> drops) {
         this.id = id;
-        this.block = block;
-        this.fuel = fuel;
+        this.customBlock = customBlock;
+        this.fallbackMaterial = fallbackMaterial;
         this.interval = interval;
+        this.customData = customData;
         this.drops = drops;
     }
 
@@ -23,16 +27,20 @@ public class Generator {
         return id;
     }
 
-    public CustomBlock getBlock() {
-        return block;
+    public CustomBlock getCustomBlock() {
+        return customBlock;
     }
 
-    public Material getFuel() {
-        return fuel;
+    public Material getFallbackMaterial() {
+        return fallbackMaterial;
     }
 
     public int getInterval() {
         return interval;
+    }
+
+    public int getCustomData() {
+        return customData;
     }
 
     public List<GeneratorDrop> getDrops() {
