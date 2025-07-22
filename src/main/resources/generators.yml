@@ -1,0 +1,11 @@
+generators:
+  basic_generator:
+    fuel: COAL
+    interval: 20
+    drop:
+      - material: DIAMOND
+        amount: 2
+        chance: 0.8
+      - material: GOLD_INGOT
+        amount: 1
+        chance: 0.2
