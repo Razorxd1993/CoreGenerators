@@ -1,3 +1,8 @@
+// Hinweis: Der alte Code wird ersetzt, da der neue eine deutlich erweiterte Struktur hat.
+
+// Wir entfernen die alte minimalistische Version und fügen eine erweiterte Pluginstruktur schrittweise ein.
+// Beginnen wir mit der neuen Plugin-Hauptklasse.
+
 package com.coregenerators;
 
 import com.coregenerators.util.GeneratorStorage;
@@ -112,9 +117,11 @@ public final class CoreGenerators extends JavaPlugin implements Listener {
             ConfigurationSection section = generatorSection.getConfigurationSection(id);
 
             String itemsAdderId = section.getString("itemsadder");
-            CustomBlock customBlock = CustomBlock.getInstance(itemsAdderId);
-            if (customBlock == null) {
-                getLogger().warning("CustomBlock '" + itemsAdderId + "' nicht gefunden! Fallback zu STONE.");
+            CustomBlock customBlock = null;
+            if (itemsAdderId != null && CustomBlock.isInRegistry(itemsAdderId)) {
+                customBlock = CustomBlock.getInstance(itemsAdderId);
+            } else {
+                getLogger().warning("CustomBlock '" + itemsAdderId + "' nicht gefunden oder nicht registriert! Fallback zu STONE.");
             }
 
             Material fallbackMaterial = Material.STONE;
@@ -127,10 +134,22 @@ public final class CoreGenerators extends JavaPlugin implements Listener {
             List<GeneratorDrop> drops = new ArrayList<>();
 
             for (Map<?, ?> dropMap : dropList) {
-                Material material = Material.valueOf(((String) dropMap.get("material")).toUpperCase());
-                int amount = (int) dropMap.get("amount");
-                double chance = ((Number) dropMap.get("chance")).doubleValue();
-                drops.add(new GeneratorDrop(material, amount, chance));
+                if (dropMap.get("material") instanceof String materialStr &&
+                        dropMap.get("amount") instanceof Integer amount &&
+                        dropMap.get("chance") instanceof Number chanceNum) {
+
+                    try {
+                        Material material = Material.valueOf(materialStr.toUpperCase());
+                        double chance = chanceNum.doubleValue();
+                        drops.add(new GeneratorDrop(material, amount, chance));
+                    } catch (IllegalArgumentException ex) {
+                        getLogger().warning("Ungültiges Material '" + materialStr + "' bei Generator '" + id + "'.");
+                    }
+
+                } else {
+                    getLogger().warning("Fehlerhafte Drop-Angaben bei Generator '" + id + "'.");
+                }
+
             }
 
             Generator generator = new Generator(id, customBlock, fallbackMaterial, interval, customData, drops);
