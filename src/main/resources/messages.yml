@@ -1,0 +1,20 @@
+prefix: "§9§lCORELITH §f§l>>§r "
+
+no-permission: "%prefix%§cDazu hast du keine Berechtigung."
+limit-reached: "%prefix%§cDu hast dein Limit erreicht: %limit%"
+not-owner: "%prefix%§cDu bist nicht der Besitzer dieses Generators."
+player-not-found: "%prefix%§cSpieler nicht gefunden."
+generator-given: "%prefix%§aGenerator an %player% gegeben."
+reloaded: "%prefix%§aPlugin erfolgreich neu geladen."
+removed: "%prefix%§aAlle deine Generatoren wurden entfernt."
+
+fuel:
+  success: "%prefix%§aDein Generator wurde erfolgreich aufgeladen!"
+  not_enough_money: "%prefix%§cDu hast nicht genug Geld dafür."
+  max_reached: "%prefix%§cDein Generator ist bereits für 24 Stunden aufgeladen."
+
+upgrade:
+  not_implemented: "%prefix%§7Upgrades kommen bald!"
+
+members:
+  not_implemented: "%prefix%§7Mitgliederverwaltung ist noch nicht verfügbar."

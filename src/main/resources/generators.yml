@@ -1,9 +1,9 @@
 generators:
   basic_generator:
-    fuel: COAL
-    interval: 20
+    interval: 500
+    material: PAPER
     itemsadder: namespace:customblock
-    customdata:
+    customdata: 10000
     drop:
       - material: DIAMOND
         amount: 2

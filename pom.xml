@@ -23,6 +23,31 @@
             <id>matteodev</id>
             <url>https://maven.devs.beer/</url>
         </repository>
+        <repository>
+            <id>luckperms</id>
+            <url>https://repo.lucko.me/</url>
+        </repository>
+        <repository>
+            <id>itemsadder</id>
+            <url>https://repo.codemc.io/repository/maven-public/</url>
+        </repository>
+        <repository>
+            <id>tr7zw-repo</id>
+            <url>https://repo.codemc.io/repository/maven-public/</url>
+        </repository>
+
+        <!-- WorldEdit Repo -->
+        <repository>
+            <id>enginehub</id>
+            <url>https://maven.enginehub.org/repo/</url>
+        </repository>
+
+        <!-- FAWE Repo -->
+        <repository>
+            <id>enginehub-snapshots</id>
+            <url>https://repo.enginehub.org/snapshots/</url>
+        </repository>
+
     </repositories>
 
     <dependencies>
@@ -50,6 +75,39 @@
             <version>4.0.10</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- Luck Perms API -->
+        <dependency>
+            <groupId>net.luckperms</groupId>
+            <artifactId>api</artifactId>
+            <version>5.4</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- NBT-API API -->
+        <dependency>
+            <groupId>de.tr7zw</groupId>
+            <artifactId>item-nbt-api-plugin</artifactId>
+            <version>2.15.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- WorldEdit API -->
+        <dependency>
+            <groupId>com.sk89q.worldedit</groupId>
+            <artifactId>worldedit-bukkit</artifactId>
+            <version>7.2.13</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.intellectualsites.bom</groupId>
+            <artifactId>bom-newest</artifactId> <!--  Ref: https://github.com/IntellectualSites/bom -->
+            <version>1.52</version>
+            <scope>import</scope>
+            <type>pom</type>
+        </dependency>
+
     </dependencies>
 
     <build>

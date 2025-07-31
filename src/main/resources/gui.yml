@@ -1,0 +1,39 @@
+generator_gui:
+  title: "§8Generator"
+  size: 54
+
+  items:
+    fuel:
+      slot: 11
+      material: BLAZE_POWDER
+      name: "§6Aufladen §7(30min für 2000 Cores)"
+      lore:
+        - "§7Aktive Zeit: §f%time%"
+        - ""
+        - "§eKlicke zum Aufladen"
+
+    upgrade:
+      slot: 13
+      material: ANVIL
+      name: "§bUpgrade"
+      lore:
+        - "§7Aktuelles Level: §f%upgrade%"
+        - ""
+        - "§cNoch nicht verfügbar"
+
+    members:
+      slot: 15
+      material: PLAYER_HEAD
+      name: "§aMitglieder verwalten"
+      lore:
+        - "§7Füge Freunde hinzu"
+        - ""
+        - "§cNoch nicht verfügbar"
+
+    remove:
+      slot: 40
+      material: BARRIER
+      name: "§cGenerator aufheben"
+      lore:
+        - "§7Klicke hier, um den Generator"
+        - "§7abzubauen und zurückzubekommen."

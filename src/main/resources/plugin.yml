@@ -1,11 +1,17 @@
 name: CoreGenerators
-main: com.coregenerators.CoreGenerators
+main: com.coregenerators.main.CoreGenerators
 version: 1.0
 api-version: 1.16
 author: Razorxd1993
-depend: [Vault, ItemsAdder]
+depend: [Vault, ItemsAdder, NBTAPI]
+
 commands:
   coregen:
-    description: Generator-Befehle
-    usage: /<command> <give|reload|check|remove>
-    permission: coregen.admin
+    description: Hauptbefehl für CoreGenerators
+    usage: |
+      /coregen reload – Lädt alle Konfigurationsdateien neu
+      /coregen give <Spieler> <GeneratorID> [Level] – Gibt einem Spieler einen Generator
+      /coregen remove – Entfernt alle Generatoren des ausführenden Spielers
+      /coregen debug – Aktiviert/Deaktiviert den Tick-Debugmodus
+    aliases: [cg]
+    permission-message: §cDu hast keine Berechtigung für diesen Befehl.

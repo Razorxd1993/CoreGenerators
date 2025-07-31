@@ -1,3 +1,16 @@
 generator-settings:
   default-fuel: COAL
   default-speed: 1.0
+rank-permission:
+  default: 5
+  150h: 8
+  300h: 10
+  500h: 12
+  1000h: 15
+  vip: 20
+  vip+: 25
+  ultra: 30
+  ultra+: 40
+debug:
+  tick-logging: true
+  generator-loading: true
