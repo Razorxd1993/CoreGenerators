@@ -1,13 +1,289 @@
 generators:
-  basic_generator:
-    interval: 500
+  Stein:
+    interval: 25
     material: PAPER
-    itemsadder: namespace:customblock
-    customdata: 10000
+    itemsadder: coregenerators:coregenerator
+    customdata: 10013
     drop:
-      - material: DIAMOND
-        amount: 2
-        chance: 0.8
-      - material: GOLD_INGOT
+      - material: STONE
         amount: 1
-        chance: 0.2
+        chance: 0.75
+      - material: COBBLESTONE
+        amount: 1
+        chance: 0.75
+      - material: GRAVEL
+        amount: 1
+        chance: 0.75
+      - material: GRANITE
+        amount: 1
+        chance: 0.75
+      - material: DIORITE
+        amount: 1
+        chance: 0.75
+      - material: ANDESITE
+        amount: 1
+        chance: 0.75
+      - material: COAL_ORE
+        amount: 1
+        chance: 0.45
+      - material: IRON_ORE
+        amount: 1
+        chance: 0.35
+      - material: GOLD_ORE
+        amount: 1
+        chance: 0.35
+      - material: REDSTONE_ORE
+        amount: 1
+        chance: 0.25
+      - material: LAPIS_ORE
+        amount: 1
+        chance: 0.25
+      - material: EMERALD_ORE
+        amount: 1
+        chance: 0.10
+      - material: DIAMOND_ORE
+        amount: 1
+        chance: 0.10
+
+  Erd:
+    interval: 25
+    material: PAPER
+    itemsadder: coregenerators:coregenerator
+    customdata: 10013
+    drop:
+      - material: DIRT
+        amount: 1
+        chance: 0.75
+      - material: GRASS_BLOCK
+        amount: 1
+        chance: 0.75
+      - material: ROOTED_DIRT
+        amount: 1
+        chance: 0.75
+      - material: COARSE_DIRT
+        amount: 1
+        chance: 0.75
+      - material: PACKED_MUD
+        amount: 1
+        chance: 0.75
+      - material: MUDDY_MANGROVE_ROOTS
+        amount: 1
+        chance: 0.75
+      - material: MUD
+        amount: 1
+        chance: 0.75
+      - material: GRAVEL
+        amount: 1
+        chance: 0.75
+      - material: SAND
+        amount: 1
+        chance: 0.75
+      - material: CLAY
+        amount: 1
+        chance: 0.75
+
+  Nether:
+    interval: 25
+    material: PAPER
+    itemsadder: coregenerators:coregenerator
+    customdata: 10013
+    drop:
+      - material: BASALT
+        amount: 1
+        chance: 0.75
+      - material: NETHERRACK
+        amount: 1
+        chance: 0.75
+      - material: GRAVEL
+        amount: 1
+        chance: 0.75
+      - material: NETHER_QUARTZ_ORE
+        amount: 1
+        chance: 0.35
+      - material: NETHER_GOLD_ORE
+        amount: 1
+        chance: 0.35
+      - material: MAGMA_BLOCK
+        amount: 1
+        chance: 0.75
+      - material: SOUL_SAND
+        amount: 1
+        chance: 0.75
+      - material: OBSIDIAN
+        amount: 1
+        chance: 0.35
+      - material: CRYING_OBSIDIAN
+        amount: 1
+        chance: 0.35
+      - material: WARPED_NYLIUM
+        amount: 1
+        chance: 0.75
+      - material: CRIMSON_NYLIUM
+        amount: 1
+        chance: 0.75
+      - material: SOUL_SOIL
+        amount: 1
+        chance: 0.75
+      - material: GLOWSTONE
+        amount: 1
+        chance: 0.35
+      - material: BLACKSTONE
+        amount: 1
+        chance: 0.75
+      - material: GILDED_BLACKSTONE
+        amount: 1
+        chance: 0.45
+
+  Deep:
+    interval: 25
+    material: PAPER
+    itemsadder: coregenerators:coregenerator
+    customdata: 10013
+    drop:
+      - material: COBBLED_DEEPSLATE
+        amount: 1
+        chance: 0.75
+      - material: DEEPSLATE
+        amount: 1
+        chance: 0.75
+      - material: DEEPSLATE_COAL_ORE
+        amount: 1
+        chance: 0.45
+      - material: DEEPSLATE_IRON_ORE
+        amount: 1
+        chance: 0.35
+      - material: DEEPSLATE_COPPER_ORE
+        amount: 1
+        chance: 0.35
+      - material: DEEPSLATE_REDSTONE_ORE
+        amount: 1
+        chance: 0.25
+      - material: DEEPSLATE_LAPIS_ORE
+        amount: 1
+        chance: 0.25
+      - material: DEEPSLATE_GOLD_ORE
+        amount: 1
+        chance: 0.35
+      - material: DEEPSLATE_DIAMOND_ORE
+        amount: 1
+        chance: 0.10
+      - material: MOSS_BLOCK
+        amount: 1
+        chance: 0.75
+      - material: DRIPSTONE_BLOCK
+        amount: 1
+        chance: 0.75
+      - material: POINTED_DRIPSTONE
+        amount: 1
+        chance: 0.75
+      - material: CALCITE
+        amount: 1
+        chance: 0.75
+
+  End:
+    interval: 25
+    material: PAPER
+    itemsadder: coregenerators:coregenerator
+    customdata: 10013
+    drop:
+      - material: END_STONE
+        amount: 1
+        chance: 0.75
+      - material: END_STONE_BRICKS
+        amount: 1
+        chance: 0.75
+      - material: PURPUR_BLOCK
+        amount: 1
+        chance: 0.35
+      - material: PURPUR_PILLAR
+        amount: 1
+        chance: 0.35
+      - material: END_ROD
+        amount: 1
+        chance: 0.35
+      - material: CHORUS_FLOWER
+        amount: 1
+        chance: 0.25
+      - material: CHORUS_FRUIT
+        amount: 1
+        chance: 0.25
+
+  Holz:
+    interval: 25
+    material: PAPER
+    itemsadder: coregenerators:coregenerator
+    customdata: 10013
+    drop:
+      - material: OAK_LOG
+        amount: 1
+        chance: 0.75
+      - material: SPRUCE_LOG
+        amount: 1
+        chance: 0.75
+      - material: BIRCH_LOG
+        amount: 1
+        chance: 0.75
+      - material: JUNGLE_LOG
+        amount: 1
+        chance: 0.75
+      - material: ACACIA_LOG
+        amount: 1
+        chance: 0.75
+      - material: DARK_OAK_LOG
+        amount: 1
+        chance: 0.75
+      - material: MANGROVE_LOG
+        amount: 1
+        chance: 0.75
+      - material: CRIMSON_STEM
+        amount: 1
+        chance: 0.75
+      - material: WARPED_STEM
+        amount: 1
+        chance: 0.75
+      - material: CHERRY_LOG
+        amount: 1
+        chance: 0.75
+      - material: PALE_OAK_LOG
+        amount: 1
+        chance: 0.75
+
+  Pflanzen:
+    interval: 25
+    material: PAPER
+    itemsadder: coregenerators:coregenerator
+    customdata: 10013
+    drop:
+      - material: WHEAT
+        amount: 1
+        chance: 0.75
+      - material: POTATO
+        amount: 1
+        chance: 0.75
+      - material: CARROT
+        amount: 1
+        chance: 0.75
+      - material: NETHER_WART
+        amount: 1
+        chance: 0.75
+      - material: BEETROOT
+        amount: 1
+        chance: 0.75
+      - material: SWEET_BERRIES
+        amount: 1
+        chance: 0.75
+      - material: POISONOUS_POTATO
+        amount: 1
+        chance: 0.35
+      - material: MELON_SLICE
+        amount: 1
+        chance: 0.75
+      - material: GLOW_BERRIES
+        amount: 1
+        chance: 0.75
+      - material: GOLDEN_CARROT
+        amount: 1
+        chance: 0.1
+      - material: APPLE
+        amount: 1
+        chance: 0.75

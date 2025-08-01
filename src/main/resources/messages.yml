@@ -10,11 +10,13 @@ removed: "%prefix%§aAlle deine Generatoren wurden entfernt."
 
 fuel:
   success: "%prefix%§aDein Generator wurde erfolgreich aufgeladen!"
-  not_enough_money: "%prefix%§cDu hast nicht genug Geld dafür."
+  not_enough_money: "%prefix%§cDu hast nicht genug ₪ Cores dafür."
   max_reached: "%prefix%§cDein Generator ist bereits für 24 Stunden aufgeladen."
 
 upgrade:
-  not_implemented: "%prefix%§7Upgrades kommen bald!"
+  success: "%prefix%§aUpgrade erfolgreich! Neuer Level: §e%level%"
+  max_level: "%prefix%§cDieser Generator ist bereits auf dem maximalen Level!"
+  not_enough_money: "%prefix%§cDu hast nicht genug ₪ Cores für das Upgrade!"
 
 members:
   not_implemented: "%prefix%§7Mitgliederverwaltung ist noch nicht verfügbar."

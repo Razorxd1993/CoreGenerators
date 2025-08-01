@@ -1,5 +1,8 @@
-package com.coregenerators.generatorconfigs;
+package com.coregenerators.listener;
 
+import com.coregenerators.generatorconfigs.GeneratorGui;
+import com.coregenerators.generatorconfigs.PlacedGenerator;
+import com.coregenerators.generatorconfigs.UpgradeLevel;
 import com.coregenerators.main.CoreGenerators;
 import com.coregenerators.main.Generator;
 import com.coregenerators.util.FaweCutUtil;
@@ -11,6 +14,7 @@ import net.luckperms.api.node.types.PermissionNode;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -42,6 +46,7 @@ public class GeneratorGuiListener implements Listener {
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
         if (event.getPlayer() instanceof Player player) {
+            // aktuell leer
         }
     }
 
@@ -54,7 +59,7 @@ public class GeneratorGuiListener implements Listener {
 
         event.setCancelled(true);
         int slot = event.getRawSlot();
-        if (slot != 11 && slot != 13 && slot != 15 && slot != 26) return;
+        if (slot != 11 && slot != 13 && slot != 15 && slot != 22) return;
 
         PlacedGenerator placed = openGenerators.get(player.getUniqueId());
         if (placed == null) {
@@ -82,25 +87,50 @@ public class GeneratorGuiListener implements Listener {
                 economy.withdrawPlayer(player, cost);
                 placed.setFuelEndTime(placed.getFuelEndTime() + 30 * 60);
 
-                // 🔥 Neue Zeile → Änderungen sofort speichern
                 CoreGenerators.getInstance().getStorage().saveGenerator(placed);
 
                 MessageUtil.send(player, "fuel.success");
                 GeneratorGui.open(player, placed);
             }
 
-            case 13 -> MessageUtil.send(player, "upgrade.not_implemented");
+            case 13 -> {
+                int currentLevel = placed.getUpgradeLevel();
+                int nextLevel = currentLevel + 1;
+
+                if (!UpgradeLevel.exists(nextLevel)) {
+                    MessageUtil.send(player, "upgrade.max_level_reached"); // Nachricht definieren in messages.yml
+                    return;
+                }
+
+                UpgradeLevel nextUpgrade = UpgradeLevel.get(nextLevel);
+                double price = nextUpgrade.getPrice();
+
+                if (!economy.has(player, price)) {
+                    MessageUtil.send(player, "upgrade.not_enough_money"); // Nachricht definieren in messages.yml
+                    return;
+                }
+
+                economy.withdrawPlayer(player, price);
+                placed.setUpgradeLevel(nextLevel);
+
+                // Generator speichern
+                CoreGenerators.getInstance().getStorage().saveGenerator(placed);
+
+                MessageUtil.send(player, "upgrade.success", String.valueOf(nextLevel), String.valueOf(price));
+
+                // GUI neu öffnen, damit die Anzeige aktualisiert wird
+                GeneratorGui.open(player, placed);
+            }
+
             case 15 -> MessageUtil.send(player, "members.not_implemented");
 
-            case 26 -> {
-                player.closeInventory();
-
-                // Generator aus Speicher entfernen
-                CoreGenerators.getInstance().getStorage().removeGenerator(placed);
-                CoreGenerators.getInstance().getStorage().saveAll();
-
-                player.sendMessage("§aGenerator wurde entfernt.");
+            case 22 -> {
+                placed.setActive(!placed.isActive());
+                CoreGenerators.getInstance().getStorage().saveGenerator(placed);
+                player.sendMessage("§7Generator ist jetzt " + (placed.isActive() ? "§aaktiviert" : "§cdeaktiviert") + "§7.");
+                GeneratorGui.open(player, placed);
             }
+
         }
     }
 
@@ -117,7 +147,6 @@ public class GeneratorGuiListener implements Listener {
 
         event.setCancelled(true);
         setOpenGenerator(player.getUniqueId(), placed);
-
         GeneratorGui.open(player, placed);
     }
 }

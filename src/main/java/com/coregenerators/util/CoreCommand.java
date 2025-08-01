@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 public class CoreCommand implements CommandExecutor, TabCompleter {
 
@@ -62,7 +61,9 @@ public class CoreCommand implements CommandExecutor, TabCompleter {
                     }
                 }
 
-                target.getInventory().addItem(plugin.getStorage().createGeneratorItem(generatorId, level));
+                long defaultFuelEndTime = System.currentTimeMillis() / 1000L + 30 * 60; // 30 Minuten Laufzeit
+
+                target.getInventory().addItem(plugin.getStorage().createGeneratorItem(generatorId, level, defaultFuelEndTime));
                 sender.sendMessage(Messages.get("generator-given", "%player%", target.getName()));
             }
 
@@ -109,7 +110,6 @@ public class CoreCommand implements CommandExecutor, TabCompleter {
             return StringUtil.copyPartialMatches(args[0], subcommands, new ArrayList<>());
         }
 
-        // Tab für: /coregen give <Spieler>
         if (args.length == 2 && args[0].equalsIgnoreCase("give")) {
             List<String> playerNames = plugin.getServer().getOnlinePlayers().stream()
                     .map(Player::getName)
@@ -117,13 +117,11 @@ public class CoreCommand implements CommandExecutor, TabCompleter {
             return StringUtil.copyPartialMatches(args[1], playerNames, new ArrayList<>());
         }
 
-        // Tab für: /coregen give <Spieler> <GeneratorID>
         if (args.length == 3 && args[0].equalsIgnoreCase("give")) {
             List<String> generatorIds = new ArrayList<>(CoreGenerators.generators.keySet());
             return StringUtil.copyPartialMatches(args[2], generatorIds, new ArrayList<>());
         }
 
-        // Tab für: /coregen give <Spieler> <GeneratorID> <Level>
         if (args.length == 4 && args[0].equalsIgnoreCase("give")) {
             return StringUtil.copyPartialMatches(args[3], List.of("0", "1", "2", "3", "4", "5"), new ArrayList<>());
         }

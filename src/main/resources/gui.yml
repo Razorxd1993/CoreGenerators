@@ -18,8 +18,10 @@ generator_gui:
       name: "§bUpgrade"
       lore:
         - "§7Aktuelles Level: §f%upgrade%"
+        - "§7Kosten für nächstes Level:"
+        - "§6%upgrade_cost% §8(Einmalig)"
         - ""
-        - "§cNoch nicht verfügbar"
+        - "§aKlicke zum Upgraden"
 
     members:
       slot: 15
@@ -30,10 +32,10 @@ generator_gui:
         - ""
         - "§cNoch nicht verfügbar"
 
-    remove:
-      slot: 40
-      material: BARRIER
-      name: "§cGenerator aufheben"
+    toggle:
+      slot: 22
+      material: REDSTONE_TORCH
+      name: "§cGenerator an/ausschalten"
       lore:
-        - "§7Klicke hier, um den Generator"
-        - "§7abzubauen und zurückzubekommen."
+        - "§7Klicke, um den Generator"
+        - "§aein§7-/§causzuschalten§7."

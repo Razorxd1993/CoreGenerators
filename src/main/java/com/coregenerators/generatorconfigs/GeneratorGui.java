@@ -47,17 +47,37 @@ public class GeneratorGui {
                 ItemMeta meta = item.getItemMeta();
                 if (meta == null) continue;
 
-                // Name
-                meta.setDisplayName(itemSection.getString("name", ""));
+                // Slot 22 = An/Aus-Button: Überschreibe Name & Lore dynamisch
+                if (slot == 22) {
+                    if (placed.isActive()) {
+                        meta.setDisplayName("§aGenerator an");
+                        List<String> lore = new ArrayList<>();
+                        lore.add("§7Klicke, um den Generator auszuschalten.");
+                        meta.setLore(lore);
+                    } else {
+                        meta.setDisplayName("§cGenerator aus");
+                        List<String> lore = new ArrayList<>();
+                        lore.add("§7Klicke, um den Generator einzuschalten.");
+                        meta.setLore(lore);
+                    }
+                } else {
+                    // Name aus config
+                    meta.setDisplayName(itemSection.getString("name", ""));
 
-                // Lore mit Platzhalter ersetzen
-                List<String> lore = new ArrayList<>();
-                for (String line : itemSection.getStringList("lore")) {
-                    line = line.replace("%time%", getRemainingTime(placed));
-                    line = line.replace("%upgrade%", String.valueOf(placed.getUpgradeLevel()));
-                    lore.add(line);
+                    // Lore mit Platzhalter ersetzen
+                    List<String> lore = new ArrayList<>();
+                    for (String line : itemSection.getStringList("lore")) {
+                        int currentLevel = placed.getUpgradeLevel();
+                        int nextLevel = Math.min(currentLevel + 1, 6);
+                        double nextUpgradeCost = nextLevel * 5000;
+
+                        line = line.replace("%time%", getRemainingTime(placed));
+                        line = line.replace("%upgrade%", String.valueOf(currentLevel));
+                        line = line.replace("%upgrade_cost%", nextLevel > currentLevel ? String.valueOf((int) nextUpgradeCost) : "§cMax");
+                        lore.add(line);
+                    }
+                    meta.setLore(lore);
                 }
-                meta.setLore(lore);
 
                 item.setItemMeta(meta);
                 gui.setItem(slot, item);

@@ -2,6 +2,7 @@ package com.coregenerators.generatorconfigs;
 
 import com.coregenerators.main.CoreGenerators;
 import com.coregenerators.main.Generator;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import java.util.UUID;
@@ -15,6 +16,7 @@ public class PlacedGenerator {
     private long lastTick;
     private int upgradeLevel;
     private int tickCount;
+    private boolean active = true;
 
     public PlacedGenerator(Location location, String generatorId, UUID owner, long fuelEndTime, int upgradeLevel) {
         this.owner = owner;
@@ -74,7 +76,7 @@ public class PlacedGenerator {
      * aber maximal bis 24 Stunden Gesamtzeit.
      */
     public void addFuel(int seconds) {
-        long now = System.currentTimeMillis() / 1000;
+        long now = System.currentTimeMillis() / 1000L;
         long currentEnd = this.fuelEndTime;
 
         if (currentEnd < now) {
@@ -92,6 +94,19 @@ public class PlacedGenerator {
     }
 
     public Generator getGenerator() {
-        return CoreGenerators.generators.get(this.generatorId);
+        Generator gen = CoreGenerators.generators.get(this.generatorId.toLowerCase());
+        if (gen == null) {
+            Bukkit.getLogger().warning("[CoreGenerators] WARNUNG: Kein Generator gefunden mit ID '" + this.generatorId + "'");
+        }
+        return gen;
     }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
 }

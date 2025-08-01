@@ -1,0 +1,25 @@
+upgrade_levels:
+  1:
+    interval_multiplier: 1.0
+    drop_multiplier: 1
+    cost: 2000
+  2:
+    interval_multiplier: 0.9
+    drop_multiplier: 2
+    cost: 2000
+  3:
+    interval_multiplier: 0.8
+    drop_multiplier: 3
+    cost: 2000
+  4:
+    interval_multiplier: 0.7
+    drop_multiplier: 4
+    cost: 2000
+  5:
+    interval_multiplier: 0.6
+    drop_multiplier: 5
+    cost: 2000
+  6:
+    interval_multiplier: 0.5
+    drop_multiplier: 6
+    cost: 2000

@@ -36,6 +36,8 @@ public class GeneratorLoader {
             ConfigurationSection genSection = section.getConfigurationSection(key);
             if (genSection == null) continue;
 
+            String lowercaseKey = key.toLowerCase();
+
             String itemsAdderId = genSection.getString("itemsadder");
             CustomFurniture furniture = null;
             CustomStack stack = null;
@@ -69,26 +71,17 @@ public class GeneratorLoader {
             int customData = genSection.getInt("customdata", 0);
 
             // Drops laden
-            ConfigurationSection dropSection = genSection.getConfigurationSection("drop");
-            List<GeneratorDrop> drops = GeneratorDrop.fromSection(dropSection);
+            List<GeneratorDrop> drops = GeneratorDrop.fromList(genSection.getList("drop"));
 
-            // Debug-Ausgabe
-            if (plugin.getConfig().getBoolean("debug.generator-loading", false)) {
-                plugin.getLogger().info("Generator '" + key + "' lädt " + drops.size() + " Drop(s):");
-                for (GeneratorDrop drop : drops) {
-                    plugin.getLogger().info("  -> " + drop.getMaterial() + " x" + drop.getAmount() + " @ " + drop.getChance());
-                }
-            }
-
-            Generator generator = new Generator(key, furniture, fallbackMaterial, interval, customData, drops, itemsAdderId);
+            Generator generator = new Generator(lowercaseKey, furniture, fallbackMaterial, interval, customData, drops, itemsAdderId);
 
             if (itemStack == null) {
                 itemStack = new ItemStack(fallbackMaterial);
             }
 
             generator.setItem(itemStack);
-            CoreGenerators.generators.put(key, generator);
-            plugin.getLogger().info("Generator geladen: " + key);
+            CoreGenerators.generators.put(lowercaseKey, generator);
+            plugin.getLogger().info("Generator geladen: " + lowercaseKey + " mit " + drops.size() + " Drops");
         }
     }
 }

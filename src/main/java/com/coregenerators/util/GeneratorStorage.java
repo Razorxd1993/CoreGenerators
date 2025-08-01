@@ -52,24 +52,25 @@ public class GeneratorStorage {
                 YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
                 List<PlacedGenerator> list = new ArrayList<>();
-                for (String key : config.getConfigurationSection("generators").getKeys(false)) {
-                    String path = "generators." + key;
+                if (config.contains("generators")) {
+                    for (String key : config.getConfigurationSection("generators").getKeys(false)) {
+                        String path = "generators." + key;
 
-                    String world = config.getString(path + ".world");
-                    int x = config.getInt(path + ".x");
-                    int y = config.getInt(path + ".y");
-                    int z = config.getInt(path + ".z");
-                    String id = config.getString(path + ".id");
-                    long fuel = config.getLong(path + ".fuelEndTime");
-                    int upgrade = config.getInt(path + ".upgrade");
+                        String world = config.getString(path + ".world");
+                        int x = config.getInt(path + ".x");
+                        int y = config.getInt(path + ".y");
+                        int z = config.getInt(path + ".z");
+                        String id = config.getString(path + ".id").toLowerCase();
+                        long fuel = config.getLong(path + ".fuelEndTime");
+                        int upgrade = config.getInt(path + ".upgrade");
 
-                    Location loc = new Location(Bukkit.getWorld(world), x, y, z);
-                    PlacedGenerator gen = new PlacedGenerator(loc, id, owner, fuel, upgrade);
+                        Location loc = new Location(Bukkit.getWorld(world), x, y, z);
+                        PlacedGenerator gen = new PlacedGenerator(loc, id, owner, fuel, upgrade);
 
-                    list.add(gen);
-                    placedGeneratorMap.put(loc, gen);
+                        list.add(gen);
+                        placedGeneratorMap.put(loc, gen);
+                    }
                 }
-
                 playerGeneratorMap.put(owner, list);
             } catch (Exception e) {
                 CoreGenerators.getInstance().getLogger().warning("Fehler beim Laden: " + file.getName());
@@ -106,7 +107,6 @@ public class GeneratorStorage {
             }
         }
 
-        // Wenn gefunden, existierenden Eintrag überschreiben, sonst neuen Index nutzen
         String path = "generators." + (foundKey != null ? foundKey : getNextFreeIndex(config));
         config.set(path + ".world", generator.getLocation().getWorld().getName());
         config.set(path + ".x", generator.getLocation().getBlockX());
@@ -114,7 +114,7 @@ public class GeneratorStorage {
         config.set(path + ".z", generator.getLocation().getBlockZ());
         config.set(path + ".fuelEndTime", generator.getFuelEndTime());
         config.set(path + ".upgrade", generator.getUpgradeLevel());
-        config.set(path + ".id", generator.getGeneratorId());
+        config.set(path + ".id", generator.getGeneratorId().toLowerCase());
 
         try {
             config.save(file);
@@ -198,7 +198,7 @@ public class GeneratorStorage {
      * Gibt ein Generator-Item mit benutzerdefiniertem Fuel-Endzeitpunkt und Upgrade zurück.
      */
     public ItemStack createGeneratorItem(String generatorId, int upgradeLevel, long fuelEndTime) {
-        Generator generator = CoreGenerators.generators.get(generatorId);
+        Generator generator = CoreGenerators.generators.get(generatorId.toLowerCase());
         if (generator == null) {
             CoreGenerators.getInstance().getLogger().warning("Generator nicht gefunden: " + generatorId);
             return null;
@@ -225,7 +225,7 @@ public class GeneratorStorage {
         }
 
         NBTItem nbt = new NBTItem(item);
-        nbt.setString("coregen_id", generatorId);
+        nbt.setString("coregen_id", generatorId.toLowerCase());
         nbt.setInteger("coregen_upgrade", upgradeLevel);
         nbt.setLong("coregen_fuel", fuelEndTime);
 

@@ -1,6 +1,6 @@
 package com.coregenerators.main;
 
-import com.coregenerators.generatorconfigs.GeneratorGuiListener;
+import com.coregenerators.listener.GeneratorGuiListener;
 import com.coregenerators.generatorconfigs.GeneratorTickTask;
 import com.coregenerators.generatorconfigs.PlacedGenerator;
 import com.coregenerators.listener.*;
@@ -69,6 +69,9 @@ public class CoreGenerators extends JavaPlugin {
         if (!storageFolder.exists()) {
             storageFolder.mkdirs();
         }
+
+        // Upgrade-Level laden
+        com.coregenerators.generatorconfigs.UpgradeLevel.loadAll();
 
         // Generatoren aus ItemsAdder etc. werden im IAListener geladen (nicht hier direkt!)
 
