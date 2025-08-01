@@ -204,19 +204,16 @@ public class GeneratorStorage {
             return null;
         }
 
-        ItemStack item = generator.getItem();
-        if (item == null) {
-            CoreGenerators.getInstance().getLogger().warning("ItemStack ist null für Generator: " + generatorId);
-            return null;
-        }
-
-        item = item.clone();
+        ItemStack item = generator.getItem().clone();
 
         long remainingMinutes = Math.max(0, (fuelEndTime - System.currentTimeMillis() / 1000L) / 60);
 
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
-            meta.setDisplayName("§aGenerator: " + generatorId);
+            // Nur im DisplayName erste Buchstabe groß
+            String displayName = "§aGenerator: " + capitalizeFirstLetter(generatorId.toLowerCase());
+            meta.setDisplayName(displayName);
+
             List<String> lore = new ArrayList<>();
             lore.add("§7Aufladung: §a" + remainingMinutes + " min");
             lore.add("§7Upgrade: §e" + upgradeLevel);
@@ -231,6 +228,12 @@ public class GeneratorStorage {
 
         return nbt.getItem();
     }
+
+    private static String capitalizeFirstLetter(String input) {
+        if (input == null || input.isEmpty()) return input;
+        return input.substring(0, 1).toUpperCase() + input.substring(1);
+    }
+
 
     public void removeAllGenerators(UUID playerId) {
         List<PlacedGenerator> generators = playerGeneratorMap.remove(playerId);
