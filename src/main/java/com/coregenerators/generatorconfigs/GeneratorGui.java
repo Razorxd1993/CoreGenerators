@@ -88,12 +88,26 @@ public class GeneratorGui {
     }
 
     private static String getRemainingTime(PlacedGenerator placed) {
-        long now = System.currentTimeMillis() / 1000;
-        long remaining = placed.getFuelEndTime() - now;
+        long now = System.currentTimeMillis() / 1000L;
+        long remaining;
+
+        if (placed.isPaused()) {
+            remaining = placed.getPausedFuelSeconds();
+        } else {
+            remaining = placed.getFuelEndTime() - now;
+        }
+
         if (remaining <= 0) return "§cInaktiv";
+
+        if (placed.isPaused()) {
+            long hours = remaining / 3600;
+            long minutes = (remaining % 3600) / 60;
+            return "§ePausiert (" + hours + "h " + minutes + "m)";
+        }
 
         long hours = remaining / 3600;
         long minutes = (remaining % 3600) / 60;
-        return hours + "h " + minutes + "m";
+        return "§a" + hours + "h " + minutes + "m";
     }
+
 }

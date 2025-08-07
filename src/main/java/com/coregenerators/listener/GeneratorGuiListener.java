@@ -1,16 +1,12 @@
 package com.coregenerators.listener;
 
 import com.coregenerators.generatorconfigs.GeneratorGui;
+import com.coregenerators.generatorconfigs.MemberGui;
 import com.coregenerators.generatorconfigs.PlacedGenerator;
 import com.coregenerators.generatorconfigs.UpgradeLevel;
 import com.coregenerators.main.CoreGenerators;
-import com.coregenerators.main.Generator;
-import com.coregenerators.util.FaweCutUtil;
 import com.coregenerators.util.MessageUtil;
-import de.tr7zw.nbtapi.NBTItem;
 import net.luckperms.api.LuckPerms;
-import net.luckperms.api.model.user.User;
-import net.luckperms.api.node.types.PermissionNode;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -23,7 +19,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 
@@ -68,6 +63,13 @@ public class GeneratorGuiListener implements Listener {
             return;
         }
 
+        // 🔒 Zugriff prüfen
+        if (!placed.getOwner().equals(player.getUniqueId()) && !placed.getMembers().contains(player.getUniqueId())) {
+            player.closeInventory();
+            player.sendMessage("§cDu darfst diesen Generator nicht benutzen.");
+            return;
+        }
+
         switch (slot) {
             case 11 -> {
                 long now = System.currentTimeMillis() / 1000;
@@ -85,7 +87,9 @@ public class GeneratorGuiListener implements Listener {
                 }
 
                 economy.withdrawPlayer(player, cost);
-                placed.setFuelEndTime(placed.getFuelEndTime() + 30 * 60);
+
+                // 💡 Statt setFuelEndTime: addFuel verwenden!
+                placed.addFuel(30 * 60);
 
                 CoreGenerators.getInstance().getStorage().saveGenerator(placed);
 
@@ -98,7 +102,7 @@ public class GeneratorGuiListener implements Listener {
                 int nextLevel = currentLevel + 1;
 
                 if (!UpgradeLevel.exists(nextLevel)) {
-                    MessageUtil.send(player, "upgrade.max_level_reached"); // Nachricht definieren in messages.yml
+                    MessageUtil.send(player, "upgrade.max_level_reached");
                     return;
                 }
 
@@ -106,23 +110,28 @@ public class GeneratorGuiListener implements Listener {
                 double price = nextUpgrade.getPrice();
 
                 if (!economy.has(player, price)) {
-                    MessageUtil.send(player, "upgrade.not_enough_money"); // Nachricht definieren in messages.yml
+                    MessageUtil.send(player, "upgrade.not_enough_money");
                     return;
                 }
 
                 economy.withdrawPlayer(player, price);
                 placed.setUpgradeLevel(nextLevel);
 
-                // Generator speichern
                 CoreGenerators.getInstance().getStorage().saveGenerator(placed);
 
-                MessageUtil.send(player, "upgrade.success", String.valueOf(nextLevel), String.valueOf(price));
+                MessageUtil.send(player, "upgrade.success", "%level%", String.valueOf(nextLevel), "%price%", String.valueOf(price));
 
-                // GUI neu öffnen, damit die Anzeige aktualisiert wird
                 GeneratorGui.open(player, placed);
             }
 
-            case 15 -> MessageUtil.send(player, "members.not_implemented");
+            case 15 -> {
+                if (!placed.getOwner().equals(player.getUniqueId())) {
+                    player.sendMessage("§cNur der Besitzer kann Mitglieder verwalten.");
+                    return;
+                }
+                MemberGui.open(player, placed);
+                CoreGenerators.getInstance().getMemberGuiListener().setOpenGenerator(player, placed);
+            }
 
             case 22 -> {
                 placed.setActive(!placed.isActive());
@@ -130,7 +139,6 @@ public class GeneratorGuiListener implements Listener {
                 player.sendMessage("§7Generator ist jetzt " + (placed.isActive() ? "§aaktiviert" : "§cdeaktiviert") + "§7.");
                 GeneratorGui.open(player, placed);
             }
-
         }
     }
 

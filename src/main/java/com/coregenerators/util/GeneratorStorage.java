@@ -63,9 +63,25 @@ public class GeneratorStorage {
                         String id = config.getString(path + ".id").toLowerCase();
                         long fuel = config.getLong(path + ".fuelEndTime");
                         int upgrade = config.getInt(path + ".upgrade");
+                        long pausedSeconds = config.getLong(path + ".pausedFuelSeconds", -1);
 
                         Location loc = new Location(Bukkit.getWorld(world), x, y, z);
                         PlacedGenerator gen = new PlacedGenerator(loc, id, owner, fuel, upgrade);
+
+                        if (pausedSeconds > -1) {
+                            gen.setPausedFuelSeconds(pausedSeconds);
+                            gen.setFuelEndTime(System.currentTimeMillis() / 1000L + pausedSeconds);
+                            gen.setActive(false);
+                        }
+
+                        List<String> rawMembers = config.getStringList(path + ".members");
+                        for (String s : rawMembers) {
+                            try {
+                                gen.getMembers().add(UUID.fromString(s));
+                            } catch (IllegalArgumentException ignored) {
+                                CoreGenerators.getInstance().getLogger().warning("Ungültige UUID in members-Liste für Generator bei " + loc);
+                            }
+                        }
 
                         list.add(gen);
                         placedGeneratorMap.put(loc, gen);
@@ -116,6 +132,17 @@ public class GeneratorStorage {
         config.set(path + ".upgrade", generator.getUpgradeLevel());
         config.set(path + ".id", generator.getGeneratorId().toLowerCase());
 
+        if (!generator.isActive() && generator.getPausedFuelSeconds() > 0) {
+            config.set(path + ".pausedFuelSeconds", generator.getPausedFuelSeconds());
+        } else {
+            config.set(path + ".pausedFuelSeconds", null);
+        }
+
+        List<String> memberStrings = generator.getMembers().stream()
+                .map(UUID::toString)
+                .toList();
+        config.set(path + ".members", memberStrings);
+
         try {
             config.save(file);
         } catch (IOException e) {
@@ -159,6 +186,17 @@ public class GeneratorStorage {
                 config.set(path + ".fuelEndTime", gen.getFuelEndTime());
                 config.set(path + ".upgrade", gen.getUpgradeLevel());
                 config.set(path + ".id", gen.getGeneratorId());
+
+                if (!gen.isActive() && gen.getPausedFuelSeconds() > 0) {
+                    config.set(path + ".pausedFuelSeconds", gen.getPausedFuelSeconds());
+                } else {
+                    config.set(path + ".pausedFuelSeconds", null);
+                }
+
+                List<String> memberStrings = gen.getMembers().stream()
+                        .map(UUID::toString)
+                        .toList();
+                config.set(path + ".members", memberStrings);
             }
 
             try {
@@ -186,17 +224,11 @@ public class GeneratorStorage {
         return playerGeneratorMap.getOrDefault(uuid, new ArrayList<>());
     }
 
-    /**
-     * Gibt ein Generator-Item mit Standard-Aufladung (30 min) zurück.
-     */
     public ItemStack createGeneratorItem(String generatorId, int upgradeLevel) {
         long defaultFuelEndTime = System.currentTimeMillis() / 1000L + 30 * 60;
         return createGeneratorItem(generatorId, upgradeLevel, defaultFuelEndTime);
     }
 
-    /**
-     * Gibt ein Generator-Item mit benutzerdefiniertem Fuel-Endzeitpunkt und Upgrade zurück.
-     */
     public ItemStack createGeneratorItem(String generatorId, int upgradeLevel, long fuelEndTime) {
         Generator generator = CoreGenerators.generators.get(generatorId.toLowerCase());
         if (generator == null) {
@@ -210,7 +242,6 @@ public class GeneratorStorage {
 
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
-            // Nur im DisplayName erste Buchstabe groß
             String displayName = "§aGenerator: " + capitalizeFirstLetter(generatorId.toLowerCase());
             meta.setDisplayName(displayName);
 
@@ -233,7 +264,6 @@ public class GeneratorStorage {
         if (input == null || input.isEmpty()) return input;
         return input.substring(0, 1).toUpperCase() + input.substring(1);
     }
-
 
     public void removeAllGenerators(UUID playerId) {
         List<PlacedGenerator> generators = playerGeneratorMap.remove(playerId);

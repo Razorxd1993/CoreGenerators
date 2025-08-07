@@ -2,11 +2,11 @@ package com.coregenerators.listener;
 
 import com.coregenerators.generatorconfigs.PlacedGenerator;
 import com.coregenerators.main.CoreGenerators;
+import dev.lone.itemsadder.api.Events.FurnitureBreakEvent;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import dev.lone.itemsadder.api.Events.FurnitureBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class FurnitureRemoveListener implements Listener {
@@ -21,26 +21,31 @@ public class FurnitureRemoveListener implements Listener {
         PlacedGenerator placed = CoreGenerators.getInstance().getStorage().getPlacedGenerator(loc);
         if (placed == null) return;
 
+        // 🔐 Spieler ist nicht der Besitzer?
+        if (!player.getUniqueId().equals(placed.getOwner())) {
+            player.sendMessage("§cDu bist nicht der Besitzer dieses Generators.");
+            event.setCancelled(true);
+            return;
+        }
+
+        // Spieler ist der Besitzer – Generator-Item mit NBT erzeugen
         ItemStack generatorItem = CoreGenerators.getInstance().getStorage().createGeneratorItem(
                 placed.getGeneratorId(),
                 placed.getUpgradeLevel(),
                 placed.getFuelEndTime()
         );
 
-        if (generatorItem == null) {
-            CoreGenerators.getInstance().getLogger().warning("GeneratorItem konnte nicht erstellt werden für Generator " + placed.getGeneratorId());
-            return;
+        // Item geben oder droppen
+        if (generatorItem != null) {
+            if (player.getInventory().firstEmpty() != -1) {
+                player.getInventory().addItem(generatorItem);
+            } else {
+                player.getWorld().dropItemNaturally(player.getLocation(), generatorItem);
+            }
+            player.sendMessage("§9§lCORELITH §f§l>> §aDu hast deinen Generator erfolgreich abgebaut!");
         }
 
-        // Füge Item hinzu oder droppe es
-        if (player.getInventory().firstEmpty() != -1) {
-            player.getInventory().addItem(generatorItem);
-            player.sendMessage("§aDu hast deinen Generator erfolgreich abgebaut und ins Inventar bekommen!");
-        } else {
-            player.getWorld().dropItemNaturally(player.getLocation(), generatorItem);
-            player.sendMessage("§aDu hast deinen Generator erfolgreich abgebaut!");
-        }
-
+        // Speicher aktualisieren
         CoreGenerators.getInstance().getStorage().removeGenerator(placed);
         CoreGenerators.getInstance().getStorage().saveAll();
     }

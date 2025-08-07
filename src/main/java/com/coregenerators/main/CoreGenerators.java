@@ -27,6 +27,8 @@ public class CoreGenerators extends JavaPlugin {
     private GeneratorStorage storage;
     private LuckPerms luckPerms;
     private Economy economy;
+    private MemberGuiListener memberGuiListener;
+    private ChatInputListener chatInputListener;
 
     public static final Map<String, Generator> generators = new HashMap<>();
 
@@ -34,6 +36,14 @@ public class CoreGenerators extends JavaPlugin {
     public void onEnable() {
         instance = this;
         storage = new GeneratorStorage();
+
+        // Wichtig: ChatInputListener zuerst initialisieren
+        chatInputListener = new ChatInputListener(this);
+        memberGuiListener = new MemberGuiListener(this);
+
+        // Listener registrieren in der Reihenfolge: zuerst ChatInputListener, dann MemberGuiListener
+        getServer().getPluginManager().registerEvents(chatInputListener, this);
+        getServer().getPluginManager().registerEvents(memberGuiListener, this);
 
         // LuckPerms initialisieren
         try {
@@ -73,13 +83,12 @@ public class CoreGenerators extends JavaPlugin {
         // Upgrade-Level laden
         com.coregenerators.generatorconfigs.UpgradeLevel.loadAll();
 
-        // Generatoren aus ItemsAdder etc. werden im IAListener geladen (nicht hier direkt!)
-
-        // Listener registrieren
+        // Weitere Listener registrieren
         getServer().getPluginManager().registerEvents(new FurniturePlaceListener(), this);
         getServer().getPluginManager().registerEvents(new IAListener(), this);
         getServer().getPluginManager().registerEvents(new GeneratorGuiListener(), this);
         getServer().getPluginManager().registerEvents(new FurnitureRemoveListener(), this);
+
         // Generatoren laden (jetzt sicher nach Messages & Configs)
         storage.loadAllGenerators();
 
@@ -134,4 +143,13 @@ public class CoreGenerators extends JavaPlugin {
     public static YamlConfiguration getMessages() {
         return Messages.getConfig();
     }
+
+    public MemberGuiListener getMemberGuiListener() {
+        return memberGuiListener;
+    }
+
+    public ChatInputListener getChatInputListener() {
+        return chatInputListener;
+    }
+
 }
